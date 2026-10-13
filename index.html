@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Цифровой консьерж — ИИ-помощник гостя отеля</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F7FA;--surface:#fff;--ink:#14284B;--muted:#55627A;--line:#D9E0EA;--accent:#14284B;--accent-ink:#fff;--brass:#E8A33D;--mint:#DDF1EB;--mint-ink:#0E5E4D;--me:#DDF1EB;--bot:#EDF1F6;--warn:#FCE9D6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1730;--surface:#16254A;--ink:#EAF0FA;--muted:#9FB0CC;--line:#2A3D68;--accent:#E8A33D;--accent-ink:#14284B;--mint:#12433B;--mint-ink:#9BE3CF;--me:#12433B;--bot:#1F3260;--warn:#4A3A22}}
+:root[data-theme="dark"]{--bg:#0D1730;--surface:#16254A;--ink:#EAF0FA;--muted:#9FB0CC;--line:#2A3D68;--accent:#E8A33D;--accent-ink:#14284B;--mint:#12433B;--mint-ink:#9BE3CF;--me:#12433B;--bot:#1F3260;--warn:#4A3A22}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 "Golos Text",system-ui,sans-serif}
+h1,h2,h3{font-family:Unbounded,"Golos Text",system-ui,sans-serif;font-weight:600;line-height:1.15;margin:0}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0;gap:12px}
+.logo{font-family:Unbounded,sans-serif;font-weight:600;font-size:17px;text-decoration:none;display:flex;gap:8px;align-items:center}
+.logo i{width:28px;height:28px;border-radius:50%;background:var(--brass);color:#14284B;display:grid;place-items:center;font-style:normal;font-size:14px}
+nav{display:flex;gap:20px;align-items:center;font-size:15px}
+nav a{text-decoration:none;color:var(--muted)}nav a:hover{color:var(--ink)}
+.btn{display:inline-block;border:0;border-radius:10px;padding:13px 22px;font:500 16px "Golos Text",sans-serif;background:var(--accent);color:var(--accent-ink);cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:32px 0 72px}
+.hero h1{font-size:clamp(30px,4.6vw,52px);margin-bottom:20px}
+.hero p.lead{font-size:19px;color:var(--muted);max-width:30em;margin:0 0 28px}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero small{display:block;margin-top:18px;color:var(--muted);font-size:14px}
+/* demo */
+.phone{background:var(--surface);border:1.5px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 18px 50px -24px rgba(20,40,75,.45);max-width:420px;margin-left:auto;width:100%}
+.phone-h{background:#14284B;color:#fff;padding:14px 18px;display:flex;gap:12px;align-items:center}
+.phone-h b{display:block;font-weight:600}.phone-h span{font-size:13px;opacity:.75}
+.av{width:38px;height:38px;border-radius:50%;background:var(--brass);color:#14284B;display:grid;place-items:center;font-weight:700}
+#chat{height:380px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.m{max-width:84%;padding:10px 13px;border-radius:14px;font-size:15px;line-height:1.4;white-space:pre-line}
+.m.bot{background:var(--bot);align-self:flex-start;border-bottom-left-radius:4px}
+.m.me{background:var(--me);align-self:flex-end;border-bottom-right-radius:4px}
+.m.sys{background:var(--warn);align-self:center;font-size:13px;text-align:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 12px;background:var(--surface)}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:20px;padding:6px 12px;font:400 14px "Golos Text",sans-serif;cursor:pointer}
+.chip:hover{border-color:var(--brass)}
+.chip.human{border-color:var(--mint-ink);color:var(--mint-ink)}
+.send{display:flex;gap:8px;padding:12px 16px 16px;border-top:1px solid var(--line);background:var(--surface)}
+.send input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font:400 16px "Golos Text",sans-serif;background:var(--bg);color:var(--ink)}
+.send .btn{padding:11px 16px}
+/* sections */
+section{padding:64px 0;border-top:1px solid var(--line)}
+section h2{font-size:clamp(24px,3.2vw,34px);margin-bottom:14px;max-width:20em}
+section>.wrap>p.sub{color:var(--muted);max-width:40em;margin:0 0 36px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 32px}
+.grid h3{font-size:18px;margin-bottom:8px}.grid p{margin:0;color:var(--muted);font-size:16px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;counter-reset:s;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.steps div{padding:22px;border-right:1.5px solid var(--line);background:var(--surface)}
+.steps div:last-child{border-right:0}
+.steps b{display:block;font-family:Unbounded,sans-serif;font-size:14px;margin-bottom:6px}
+.steps span{color:var(--muted);font-size:15px}
+.steps .when{display:block;color:var(--mint-ink);font-weight:500;margin-bottom:8px;font-size:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.board{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px}
+.board h3{font-size:16px;margin-bottom:12px}
+#tickets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-height:120px}
+#tickets li{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px}
+#tickets .empty{border-style:dashed;color:var(--muted);justify-content:center;text-align:center}
+.st{border:0;border-radius:14px;padding:4px 11px;font:500 13px "Golos Text",sans-serif;cursor:pointer;background:var(--warn);color:var(--ink)}
+.st.work{background:#D9E6FB;color:#14284B}.st.done{background:var(--mint);color:var(--mint-ink)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.stats b{display:block;font-family:Unbounded,sans-serif;font-size:clamp(34px,5vw,54px);line-height:1}
+.stats span{display:block;margin-top:8px;color:var(--muted);font-size:15px}
+.note{margin-top:24px;color:var(--muted);font-size:14px;max-width:44em}
+.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.list li{padding-left:22px;position:relative}.list li::before{content:"";position:absolute;left:0;top:.6em;width:10px;height:2px;background:var(--brass)}
+form{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:12px}
+label{font-size:14px;color:var(--muted);display:grid;gap:5px}
+form input,form select{border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font:400 16px "Golos Text",sans-serif;background:var(--bg);color:var(--ink);width:100%}
+#ok{display:none;background:var(--mint);color:var(--mint-ink);border-radius:10px;padding:14px;font-weight:500}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);font-size:14px}
+@media (max-width:860px){.hero,.two{grid-template-columns:1fr}.phone{margin:0 auto}.grid,.stats{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.steps div:nth-child(2){border-right:0}.steps div:nth-child(-n+2){border-bottom:1.5px solid var(--line)}nav a.h{display:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="logo" href="#top"><i>К</i>Цифровой консьерж</a>
+  <nav><a class="h" href="#how">Как работает</a><a class="h" href="#staff">Для персонала</a><a class="h" href="#safe">Данные</a><a class="btn" href="#pilot">Запросить пилот</a></nav>
+</header>
+
+<div class="hero" id="top">
+  <div>
+    <h1>Гость пишет в мессенджер — ответ приходит за секунды</h1>
+    <p class="lead">ИИ-помощник отвечает на типовые вопросы, принимает заявки службам и зовёт сотрудника, когда нужен человек. Приложение гостю не нужно, оборудование в номерах тоже.</p>
+    <div class="cta"><a class="btn" href="#pilot">Запросить пилот</a><a class="btn ghost" href="#how">Как это устроено</a></div>
+    <small>Справа — рабочая демонстрация. Напишите вопрос или нажмите на подсказку.</small>
+  </div>
+  <div class="phone" aria-label="Демонстрация чата">
+    <div class="phone-h"><div class="av">К</div><div><b>Цифровой консьерж</b><span>Отель «Берег» · онлайн</span></div></div>
+    <div id="chat" role="log" aria-live="polite"></div>
+    <div class="chips" id="chips"></div>
+    <form class="send" id="sendf" onsubmit="return false" style="border-radius:0;border-width:1px 0 0;padding:12px 16px 16px;display:flex">
+      <input id="inp" type="text" placeholder="Например: где поужинать?" aria-label="Сообщение" autocomplete="off">
+      <button class="btn" id="go" type="submit">Отправить</button>
+    </form>
+  </div>
+</div>
+</div>
+
+<section id="how"><div class="wrap">
+  <h2>Что умеет помощник</h2>
+  <p class="sub">Доступен в Telegram и MAX, в веб-чате на сайте отеля и по QR-коду в номере.</p>
+  <div class="grid">
+    <div><h3>Отвечает на вопросы</h3><p>Заезд и выезд, питание, Wi-Fi, как добраться, куда сходить. Ответ берётся только из утверждённой «Книги гостя».</p></div>
+    <div><h3>Принимает заявки</h3><p>Полотенца, уборка, мелкий ремонт, трансфер. Заявка уходит службе с номером комнаты и статусом.</p></div>
+    <div><h3>Помогает заказать</h3><p>Столик в ресторане, СПА, экскурсии. Предлагает онлайн-регистрацию перед заездом.</p></div>
+    <div><h3>Говорит на языке гостя</h3><p>Русский, английский и другие языки в одном чате.</p></div>
+    <div><h3>Зовёт человека</h3><p>Кнопка «Позвать человека» всегда под рукой. Сотрудник видит историю диалога, гость ничего не повторяет.</p></div>
+    <div><h3>Собирает отзывы</h3><p>Просит оценку после обращения и после выезда. Управляющий видит аналитику.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Запуск за пять месяцев, по шагам</h2>
+  <p class="sub">От простого к сложному: первые результаты видны уже на втором этапе.</p>
+  <div class="steps">
+    <div><span class="when">1–2 месяц</span><b>Аудит и данные</b><span>Собираем типовые вопросы, наполняем «Книгу гостя».</span></div>
+    <div><span class="when">2–3 месяц</span><b>Прототип</b><span>Бот в Telegram и MAX отвечает на частые вопросы.</span></div>
+    <div><span class="when">3–4 месяц</span><b>Интеграции</b><span>PMS, ресторан, заявки службам, правила эскалации.</span></div>
+    <div><span class="when">с 5 месяца</span><b>Пилот и масштаб</b><span>Замеряем метрики, добавляем голос и другие отели.</span></div>
+  </div>
+</div></section>
+
+<section id="staff"><div class="wrap two">
+  <div>
+    <h2>Каждый запрос — заявка со статусом</h2>
+    <p style="color:var(--muted);margin:0 0 18px">Попросите в демо полотенца или столик, и заявка появится здесь. Нажмите на статус, чтобы продвинуть её, как это сделает сотрудник службы.</p>
+    <ul class="list"><li>Исполнитель и срок видны сразу</li><li>Эскалации приходят с историей диалога</li><li>Управляющий видит обращения и отзывы в одной панели</li></ul>
+  </div>
+  <div class="board"><h3>Панель администратора · заявки</h3><ul id="tickets"><li class="empty">Заявок пока нет. Напишите в чат справа вверху.</li></ul></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Что ожидать от внедрения</h2>
+  <p class="sub">Ориентиры взяты из открытых данных о похожих решениях.</p>
+  <div class="stats">
+    <div><b>≈70%</b><span>типовых вопросов закрывается без участия человека</span></div>
+    <div><b>≈60%</b><span>меньше обращений на ресепшен</span></div>
+    <div><b>24/7</b><span>ответ без очередей, за секунды</span></div>
+  </div>
+  <p class="note">Для вашего отеля цифры подтверждаются замерами на пилоте. При 120 обращениях в сутки сокращение на 60% освобождает около 108 часов в месяц, это порядка 0,65 ставки администратора. Время уходит на сложные запросы и личное внимание к гостям.</p>
+</div></section>
+
+<section id="safe"><div class="wrap two">
+  <div>
+    <h2>Данные гостей остаются в России</h2>
+    <p style="color:var(--muted);margin:0">Помощник построен на отечественных технологиях: модель GigaChat или YandexGPT через российское облако, либо открытая модель на серверах в РФ. Это отвечает требованиям 152-ФЗ.</p>
+  </div>
+  <ul class="list">
+    <li>Персональные данные хранятся и обрабатываются на серверах в РФ</li>
+    <li>Собирается только необходимый минимум</li>
+    <li>Перед диалогом запрашивается согласие на обработку</li>
+    <li>Если ответа нет в «Книге гостя», помощник так и говорит и зовёт сотрудника</li>
+  </ul>
+</div></section>
+
+<section id="pilot"><div class="wrap two">
+  <div>
+    <h2>Запустим пилот в вашем отеле</h2>
+    <p style="color:var(--muted);margin:0">Подходит малым отелям, хостелам, апарт-отелям и сетям. Оставьте контакты, и мы обсудим, с чего начать.</p>
+  </div>
+  <form id="pf">
+    <label>Название отеля<input required name="h" autocomplete="organization"></label>
+    <label>Контакт: почта или телефон<input required name="c" autocomplete="email"></label>
+    <label>Сколько номеров<select name="n"><option>до 30</option><option>30–100</option><option>больше 100</option></select></label>
+    <button class="btn" type="submit">Запросить пилот</button>
+    <div id="ok" role="status"></div>
+  </form>
+</div></section>
+
+<footer><div class="wrap">Цифровой консьерж · концепция из конкурсной работы стипендиального конкурса «Система». Пилот в реальном отеле пока не проводился. Демо работает по готовым сценариям и не отправляет данные.</div></footer>
+
+<script>
+const chat=document.getElementById('chat'),chips=document.getElementById('chips'),inp=document.getElementById('inp'),tl=document.getElementById('tickets');
+let tickets=[],tid=0;
+const add=(t,c)=>{const d=document.createElement('div');d.className='m '+c;d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight};
+const setChips=a=>{chips.innerHTML='';a.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='chip'+(t==='Позвать человека'?' human':'');b.textContent=t;b.onclick=()=>ask(t);chips.appendChild(b)})};
+const STS=['Новая','В работе','Готово'],CL=['','work','done'];
+function render(){tl.innerHTML='';if(!tickets.length){tl.innerHTML='<li class="empty">Заявок пока нет. Напишите в чат справа вверху.</li>';return}
+ tickets.forEach(t=>{const li=document.createElement('li');const s=document.createElement('span');s.textContent=t.text;const b=document.createElement('button');b.type='button';b.className='st '+CL[t.s];b.textContent=STS[t.s];b.title='Сменить статус';b.onclick=()=>{t.s=(t.s+1)%3;render()};li.append(s,b);tl.appendChild(li)})}
+function ticket(text){tickets.unshift({id:++tid,text,s:0});render()}
+const room=q=>(q.match(/\b\d{3}\b/)||['412'])[0];
+const rules=[
+ [/wi-?fi|вай-?фай|интернет/i,()=>'Сеть: Bereg_Guest. Пароль — номер вашей комнаты.'],
+ [/завтрак|питани|еда|поесть/i,()=>'Завтрак с 7:30 до 10:30 в ресторане на первом этаже. Заказ в номер доступен до 22:00.'],
+ [/выезд|выселен|заезд|заселен|багаж/i,()=>'Заезд с 14:00, выезд до 12:00. Поздний выезд согласуем, багаж сохраним бесплатно.'],
+ [/полотенц|убор|ремонт|лампочк|кондиционер/i,q=>{const r=room(q);const w=/полотенц/i.test(q)?'Доп. полотенца':/убор/i.test(q)?'Уборка':'Мелкий ремонт';ticket(w+' · комната '+r);return 'Готово: заявка передана в хозяйственную службу (комната '+r+'). Примерно через 10 минут.'}],
+ [/столик|забронир|ужин|ресторан|поужинать|пообедать/i,q=>{ticket('Столик на двоих, 20:00 · ресторан');return 'Ресторан отеля открыт до 23:00. Забронировал столик на двоих на 20:00. Нужно другое время — напишите.'}],
+ [/спа|массаж|сауна/i,()=>'СПА работает с 10:00 до 21:00. Могу записать на массаж: напишите удобное время.'],
+ [/добраться|трансфер|такси|вокзал|аэропорт/i,q=>{ticket('Трансфер · по запросу гостя');return 'До центра 15 минут пешком. Заказал трансфер — водитель свяжется с вами в мессенджере.'}],
+ [/куда|сходить|экскурс|погулять|музей/i,()=>'Рядом набережная (10 минут пешком) и краеведческий музей. Оформить экскурсию на завтра?'],
+ [/спасибо|благодар/i,()=>'Пожалуйста! Оцените, пожалуйста, обслуживание от 1 до 5.']
+];
+function human(){ticket('Эскалация: гость просит сотрудника');add('Передаю диалог администратору вместе с историей. Он ответит в этом чате.','sys')}
+function ask(q){q=q.trim();if(!q)return;add(q,'me');inp.value='';
+ setTimeout(()=>{if(/человек|сотрудник|администратор|менеджер/i.test(q)){human();return}
+  for(const [re,fn] of rules){if(re.test(q)){add(fn(q),'bot');return}}
+  add('Этого нет в «Книге гостя», и я не буду гадать.','bot');human()},450)}
+document.getElementById('sendf').addEventListener('submit',e=>{e.preventDefault();ask(inp.value)});
+add('Здравствуйте! Я цифровой консьерж отеля «Берег». Чем помочь?','bot');
+setChips(['Пароль от Wi-Fi','Когда завтрак?','Закажите два полотенца в 412','Где поужинать?','Позвать человека']);
+document.getElementById('pf').addEventListener('submit',e=>{e.preventDefault();const o=document.getElementById('ok');o.textContent='Это демонстрационная форма: данные для «'+e.target.h.value+'» никуда не отправлены. Чтобы принимать заявки, подключите форму к почте или CRM.';o.style.display='block';e.target.reset()});
+</script>
+</body>
+</html>
